@@ -10,6 +10,34 @@ A Django web application for keeping track of job applications.
 - Search by company or position and filter by application status.
 - Dashboard with application counts and recent activity.
 
+## Screenshots
+
+These screenshots show the application with fictional demo data.
+
+### Dashboard
+
+![Dashboard with application status totals and recent activity](docs/screenshots/dashboard.png)
+
+### Application list
+
+![Application list with search, status filtering, and pagination](docs/screenshots/application-list.png)
+
+### Application detail
+
+![Application detail showing the company, status, dates, salary, and notes](docs/screenshots/application-detail.png)
+
+### Create application
+
+![Form for creating a job application](docs/screenshots/create-application.png)
+
+### Edit application
+
+![Form for editing an existing job application](docs/screenshots/edit-application.png)
+
+### Login
+
+![JobTrack login page](docs/screenshots/login.png)
+
 ## Run locally on Windows
 
 Install Python 3.10 or newer, then run these commands in PowerShell from the project directory:
