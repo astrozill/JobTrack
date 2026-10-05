@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Delete job application | JobTrack{% endblock %}
+
+{% block content_class %}compact{% endblock %}
+
+{% block content %}
+<article class="panel">
+    <h1>Delete job application</h1>
+    <p>Are you sure you want to delete your application for <strong>{{ application.position }}</strong> at <strong>{{ application.company }}</strong>?</p>
+    <form method="post" action="{% url 'applications:application_delete' application.pk %}">
+        {% csrf_token %}
+        <div class="actions">
+            <button type="submit" class="danger">Delete Application</button>
+            <a href="{{ application.get_absolute_url }}">Cancel</a>
+        </div>
+    </form>
+</article>
+{% endblock %}

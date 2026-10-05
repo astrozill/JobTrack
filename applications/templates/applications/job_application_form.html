@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} job application | JobTrack{% endblock %}
+
+{% block content_class %}compact{% endblock %}
+
+{% block content %}
+<h1>{% if object %}Edit{% else %}Add{% endif %} job application</h1>
+<p>Company, position, and status are required. Applied date is required for every status except Wishlist and must be empty for Wishlist. Other fields are optional.</p>
+<form class="panel" method="post" action="{% if object %}{% url 'applications:application_update' object.pk %}{% else %}{% url 'applications:application_create' %}{% endif %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="actions">
+        <button type="submit">Save application</button>
+        {% if object %}
+            <a href="{{ object.get_absolute_url }}">Cancel</a>
+        {% else %}
+            <a href="{% url 'applications:application_list' %}">Cancel</a>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

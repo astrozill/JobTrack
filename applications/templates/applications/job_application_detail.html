@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ application.position }} at {{ application.company }} | JobTrack{% endblock %}
+
+{% block content_class %}detail{% endblock %}
+
+{% block content %}
+<a href="{% url 'applications:application_list' %}">Back to applications</a>
+<article class="panel">
+    <h1>{{ application.position }}</h1>
+    <p><a href="{% url 'applications:application_update' application.pk %}">Edit Application</a></p>
+    <p><a href="{% url 'applications:application_delete' application.pk %}">Delete Application</a></p>
+    <dl>
+        <dt>Company</dt>
+        <dd>{{ application.company }}</dd>
+        <dt>Location</dt>
+        <dd>{{ application.location|default:"Not Provided" }}</dd>
+        <dt>Status</dt>
+        <dd>{{ application.get_status_display }}</dd>
+        <dt>Applied date</dt>
+        <dd>{{ application.applied_date|date:"M j, Y"|default:"—" }}</dd>
+        <dt>Salary</dt>
+        <dd>{{ application.salary|default_if_none:"—" }}</dd>
+        <dt>Job posting</dt>
+        <dd>
+            {% if application.job_url %}
+                <a href="{{ application.job_url }}">View original posting</a>
+            {% else %}
+                —
+            {% endif %}
+        </dd>
+        <dt>Notes</dt>
+        <dd class="notes">{{ application.notes|default:"No notes." }}</dd>
+        <dt>Created</dt>
+        <dd>{{ application.created_at|date:"M j, Y, H:i" }}</dd>
+        <dt>Updated</dt>
+        <dd>{{ application.updated_at|date:"M j, Y, H:i" }}</dd>
+    </dl>
+</article>
+{% endblock %}

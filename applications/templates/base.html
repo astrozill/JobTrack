@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}JobTrack{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'applications/css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a class="brand" href="{% if user.is_authenticated %}{% url 'applications:dashboard' %}{% else %}{% url 'login' %}{% endif %}">JobTrack</a>
+            <div class="nav-links">
+                {% with current_page=request.resolver_match.url_name %}
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'applications:dashboard' %}"{% if current_page == 'dashboard' %} aria-current="page"{% endif %}>Dashboard</a>
+                        <a href="{% url 'applications:application_list' %}"{% if current_page == 'application_list' %} aria-current="page"{% endif %}>View applications</a>
+                        <a href="{% url 'applications:application_create' %}"{% if current_page == 'application_create' %} aria-current="page"{% endif %}>Add Application</a>
+                        <span class="nav-username">{{ user.get_username }}</span>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit">Log out</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}"{% if current_page == 'login' %} aria-current="page"{% endif %}>Log in</a>
+                        <a href="{% url 'applications:register' %}"{% if current_page == 'register' %} aria-current="page"{% endif %}>Register</a>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </nav>
+    </header>
+    <main class="page-content {% block content_class %}{% endblock %}">
+        {% if messages %}
+            <ul class="messages" aria-label="Notifications">
+                {% for message in messages %}
+                    <li class="message {{ message.tags }}" role="status">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

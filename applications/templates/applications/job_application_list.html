@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Job applications | JobTrack{% endblock %}
+
+{% block content %}
+<h1>Job applications</h1>
+<form method="get" action="{% url 'applications:application_list' %}" class="filters">
+    <div>
+        <label for="search">Search company or position</label>
+        <input type="search" id="search" name="search" value="{{ search_query }}" placeholder="Company or job title">
+    </div>
+    <div>
+        <label for="status">Status</label>
+        <select id="status" name="status">
+            <option value="">All statuses</option>
+            {% for value, label in status_choices %}
+                <option value="{{ value }}"{% if selected_status == value %} selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Filter</button>
+    {% if search_query or selected_status %}
+        <a href="{% url 'applications:application_list' %}">Clear filters</a>
+    {% endif %}
+</form>
+{% if applications %}
+    <div class="table-container" role="region" aria-label="Job applications" tabindex="0">
+        <table>
+            <caption>{{ paginator.count }} application{{ paginator.count|pluralize }}</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Company</th>
+                    <th scope="col">Position</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Applied date</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <td>{{ application.company }}</td>
+                        <td>
+                            <a href="{% url 'applications:application_detail' application.pk %}">{{ application.position }}</a>
+                        </td>
+
+                        <td>{{ application.get_status_display }}</td>
+                        <td>{{ application.applied_date|date:"M j, Y"|default:"—" }}</td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if is_paginated %}
+        <nav class="pagination" aria-label="Application pages">
+            {% if page_obj.has_previous %}
+                <a href="{% querystring page=page_obj.previous_page_number %}">Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="{% querystring page=page_obj.next_page_number %}">Next</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+{% else %}
+    {% if search_query or selected_status %}
+        <p>No applications match your search or status filter.</p>
+    {% else %}
+        <p>No job applications yet.</p>
+    {% endif %}
+{% endif %}
+{% endblock %}

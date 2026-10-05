@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Register | JobTrack{% endblock %}
+
+{% block content_class %}auth{% endblock %}
+
+{% block content %}
+<h1>Create your JobTrack account</h1>
+<form class="panel" method="post" action="{% url 'applications:register' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create account</button>
+</form>
+<p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+{% endblock %}

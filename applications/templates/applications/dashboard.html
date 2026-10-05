@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | JobTrack{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<section aria-labelledby="overview-heading">
+    <h2 id="overview-heading">Application overview</h2>
+    <div class="totals">
+        <a class="card" href="{% url 'applications:application_list' %}">
+            Total applications <strong>{{ total_applications }}</strong>
+        </a>
+        {% for item in status_totals %}
+            <a class="card" href="{% url 'applications:application_list' %}?status={{ item.status|urlencode }}">
+                {{ item.label }} <strong>{{ item.count }}</strong>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+<section aria-labelledby="recent-heading">
+    <h2 id="recent-heading">Recently updated applications</h2>
+    {% if recent_applications %}
+        <div class="table-container" role="region" aria-label="Recently updated applications" tabindex="0">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Company</th>
+                        <th scope="col">Position</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in recent_applications %}
+                        <tr>
+                            <td>{{ application.company }}</td>
+                            <td><a href="{{ application.get_absolute_url }}">{{ application.position }}</a></td>
+                            <td>{{ application.get_status_display }}</td>
+                            <td>{{ application.updated_at|date:"M j, Y, H:i" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No job applications yet. Add an application to get started.</p>
+    {% endif %}
+</section>
+{% endblock %}
