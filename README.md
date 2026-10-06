@@ -59,9 +59,36 @@ To create an optional admin account:
 
 The admin interface is available at http://127.0.0.1:8000/admin/.
 
+## Run with Docker
+
+If `.env` does not exist, copy `.env.example` to `.env` and fill in your Django
+secret key and database credentials. Start the application with:
+
+```powershell
+docker compose up --build
+```
+
+Open http://localhost:8000/. Compose starts PostgreSQL, waits for it to be ready,
+and runs migrations before starting Django.
+
+The single `compose.yaml` shares your project folder at `/app` and enables
+debug mode for local development, so Python edits
+reload automatically and template/static asset edits are available on refresh.
+WhiteNoise serves static assets from their source folders in this mode; a local
+`staticfiles/` folder is not required. Rebuild after changing dependencies or the
+Dockerfile. After adding migrations, apply them with:
+
+```powershell
+docker compose exec web python manage.py migrate
+```
+
+This configuration uses Django's development server.
+
 ## Configuration
 
-The application uses SQLite for local development. The database, virtual environment,
+The application uses PostgreSQL, configured through `DB_NAME`, `DB_USER`,
+`DB_PASSWORD`, `DB_HOST`, and `DB_PORT` in `.env`. Compose sets the database host
+to `db` and keeps its data in the `postgres_data` volume. The virtual environment
 and local secrets are excluded from Git.
 
 Set the `DJANGO_SECRET_KEY` environment variable to provide your own secret key.
