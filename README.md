@@ -12,7 +12,7 @@ A Django web application for keeping track of job applications.
 
 ## Screenshots
 
-These screenshots show the application with fictional demo data.
+These screenshots show the application with demo data.
 
 ### Dashboard
 
