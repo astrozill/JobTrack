@@ -23,5 +23,5 @@ RUN DJANGO_SECRET_KEY=build-only-secret-for-collectstatic \
 
 EXPOSE 8000
 
-# Local development; supply Django and database environment variables at runtime.
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Supply Django and database environment variables at runtime.
+CMD ["gunicorn", "jobtrack.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--access-logfile", "-", "--error-logfile", "-"]

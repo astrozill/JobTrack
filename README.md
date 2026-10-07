@@ -69,7 +69,7 @@ docker compose up --build
 ```
 
 Open http://localhost:8000/. Compose starts PostgreSQL, waits for it to be ready,
-and runs migrations before starting Django.
+and runs migrations before starting Django's development server.
 
 The single `compose.yaml` shares your project folder at `/app` and enables
 debug mode for local development, so Python edits
@@ -82,7 +82,8 @@ Dockerfile. After adding migrations, apply them with:
 docker compose exec web python manage.py migrate
 ```
 
-This configuration uses Django's development server.
+The Dockerfile starts Gunicorn on port 8000 with `jobtrack.wsgi:application`.
+Compose overrides that command with Django's `runserver` for local development.
 
 ## Configuration
 
@@ -94,6 +95,17 @@ and local secrets are excluded from Git.
 Set the `DJANGO_SECRET_KEY` environment variable to provide your own secret key.
 When it is unset, the app creates and reuses a local `.django-secret-key` file.
 Keep this file private.
+
+Set `USE_HTTPS=False` for local HTTP development. Set `USE_HTTPS=True` after
+configuring HTTPS for the deployment to redirect HTTP requests to HTTPS and
+require secure session and CSRF cookies.
+With HTTPS enabled, Django trusts the proxy's `X-Forwarded-Proto` header. The
+deployment proxy must strip client-supplied values and set it to the original
+request scheme.
+
+Set `LOG_LEVEL` to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` to control
+Django and application console logs. The default is `INFO`; Docker logs are
+available with `docker compose logs -f web`.
 
 The current settings enable debug mode for local development. Before production
 deployment, configure a production secret, disable debug mode, set allowed hosts,
