@@ -134,6 +134,8 @@ and follow Django's deployment checklist.
 `/health/` returns HTTP 200 when the app is running. `/ready/` checks the database
 with `SELECT 1` and returns HTTP 200 when the query succeeds, or HTTP 503 when
 the database connection or query fails. Neither endpoint requires a login.
+Both endpoints are exempt from HTTPS redirects so HTTP health probes run the
+checks directly, including when `USE_HTTPS=True`.
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py check

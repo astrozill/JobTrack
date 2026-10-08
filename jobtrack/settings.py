@@ -39,6 +39,8 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'False').strip().lower() in ('true', '1',
 # Enable after HTTPS is configured for the deployment.
 USE_HTTPS = os.environ.get('USE_HTTPS', 'False').strip().lower() in ('true', '1', 'yes')
 SECURE_SSL_REDIRECT = USE_HTTPS
+# Health probes must reach the checks instead of returning a healthy redirect.
+SECURE_REDIRECT_EXEMPT = [r'^health/$', r'^ready/$']
 SESSION_COOKIE_SECURE = USE_HTTPS
 CSRF_COOKIE_SECURE = USE_HTTPS
 # The deployment proxy must strip client-supplied X-Forwarded-Proto headers
