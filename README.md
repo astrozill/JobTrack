@@ -82,19 +82,37 @@ Dockerfile. After adding migrations, apply them with:
 docker compose exec web python manage.py migrate
 ```
 
-The Dockerfile starts Gunicorn on port 8000 with `jobtrack.wsgi:application`.
+The Dockerfile runs migrations and collects static files at startup, then starts
+Gunicorn with `jobtrack.wsgi:application`, bound to `0.0.0.0` on the `PORT`
+environment variable (provided by Render), or port 8000 when it is unset.
 Compose overrides that command with Django's `runserver` for local development.
 
 ## Configuration
 
-The application uses PostgreSQL, configured through `DB_NAME`, `DB_USER`,
-`DB_PASSWORD`, `DB_HOST`, and `DB_PORT` in `.env`. Compose sets the database host
-to `db` and keeps its data in the `postgres_data` volume. The virtual environment
-and local secrets are excluded from Git.
+Configure PostgreSQL with `DATABASE_URL` in the environment or `.env`, for example:
+
+```dotenv
+DATABASE_URL=postgresql://jobtrack_user:your-database-password@127.0.0.1:5432/jobtrack_db
+```
+
+A nonempty `DATABASE_URL` takes precedence over `DB_NAME`, `DB_USER`,
+`DB_PASSWORD`, `DB_HOST`, and `DB_PORT`. When it is unset or empty, those five
+variables are used as before. URL-encode special characters in credentials;
+append `?sslmode=require` if your database provider requires SSL.
+
+Local Docker Compose still requires the `DB_*` credentials to start its PostgreSQL
+service. Leave `DATABASE_URL` unset to use that service; Compose sets the database
+host to `db` and keeps its data in the `postgres_data` volume. The virtual
+environment and local secrets are excluded from Git.
 
 Set the `DJANGO_SECRET_KEY` environment variable to provide your own secret key.
 When it is unset, the app creates and reuses a local `.django-secret-key` file.
 Keep this file private.
+
+Set `DJANGO_ALLOWED_HOSTS` to a comma-separated list of any additional hostnames.
+For staging on Render, the app automatically adds `RENDER_EXTERNAL_HOSTNAME`
+to `ALLOWED_HOSTS`. Render supplies this variable with the service's
+`onrender.com` hostname, so you do not need to configure it manually.
 
 Set `USE_HTTPS=False` for local HTTP development. Set `USE_HTTPS=True` after
 configuring HTTPS for the deployment to redirect HTTP requests to HTTPS and

@@ -14,14 +14,7 @@ COPY --chown=appuser:appuser . .
 
 USER appuser
 
-# Collect assets without runtime secrets or a database connection.
-# These temporary values apply only to this build command.
-RUN DJANGO_SECRET_KEY=build-only-secret-for-collectstatic \
-    DB_NAME=collectstatic DB_USER=collectstatic DB_PASSWORD=unused \
-    DB_HOST=localhost DB_PORT=5432 \
-    python manage.py collectstatic --noinput
-
 EXPOSE 8000
 
-# Supply Django and database environment variables at runtime.
-CMD ["gunicorn", "jobtrack.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--access-logfile", "-", "--error-logfile", "-"]
+# Run startup tasks before serving on Render's PORT (8000 locally).
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && exec gunicorn jobtrack.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --access-logfile - --error-logfile -"]
