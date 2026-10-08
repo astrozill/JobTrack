@@ -131,6 +131,9 @@ and follow Django's deployment checklist.
 
 ## Checks
 
+Use the [deployment checklist](docs/production-release-checklist.md) to
+check a release. It includes the latest staging results; repeat the checks for production.
+
 `/health/` returns HTTP 200 when the app is running. `/ready/` checks the database
 with `SELECT 1` and returns HTTP 200 when the query succeeds, or HTTP 503 when
 the database connection or query fails. Neither endpoint requires a login.
