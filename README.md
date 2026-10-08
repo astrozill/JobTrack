@@ -135,6 +135,10 @@ and follow Django's deployment checklist.
 with `SELECT 1` and returns HTTP 200 when the query succeeds, or HTTP 503 when
 the database connection or query fails. Neither endpoint requires a login.
 
+Both endpoints are exempt from HTTPS redirects so HTTP health probes run the
+checks directly, including when `USE_HTTPS=True`.
+
+
 ```powershell
 .\.venv\Scripts\python.exe manage.py check
 .\.venv\Scripts\python.exe manage.py test
