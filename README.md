@@ -2,6 +2,8 @@
 
 A Django web application for keeping track of job applications.
 
+[Live demo](https://jobtrack-hx94.onrender.com)
+
 ## Features
 
 - User registration, login, and logout.
@@ -110,7 +112,7 @@ When it is unset, the app creates and reuses a local `.django-secret-key` file.
 Keep this file private.
 
 Set `DJANGO_ALLOWED_HOSTS` to a comma-separated list of any additional hostnames.
-For staging on Render, the app automatically adds `RENDER_EXTERNAL_HOSTNAME`
+On Render, the app automatically adds `RENDER_EXTERNAL_HOSTNAME`
 to `ALLOWED_HOSTS`. Render supplies this variable with the service's
 `onrender.com` hostname, so you do not need to configure it manually.
 
@@ -125,14 +127,16 @@ Set `LOG_LEVEL` to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` to control
 Django and application console logs. The default is `INFO`; Docker logs are
 available with `docker compose logs -f web`.
 
-The current settings enable debug mode for local development. Before production
-deployment, configure a production secret, disable debug mode, set allowed hosts,
-and follow Django's deployment checklist.
+The `.env.example` values are for local development. In the production Render
+service, set `DJANGO_DEBUG=False`, `USE_HTTPS=True`, a strong and stable
+`DJANGO_SECRET_KEY`, and `DATABASE_URL` for the production database. Render supplies
+`RENDER_EXTERNAL_HOSTNAME` and `PORT` automatically. Add any custom domains to
+`DJANGO_ALLOWED_HOSTS` and use `/ready/` as the service's Health Check Path.
 
 ## Checks
 
 Use the [deployment checklist](docs/production-release-checklist.md) to
-check a release. It includes the latest staging results; repeat the checks for production.
+check a release.
 
 `/health/` returns HTTP 200 when the app is running. `/ready/` checks the database
 with `SELECT 1` and returns HTTP 200 when the query succeeds, or HTTP 503 when
