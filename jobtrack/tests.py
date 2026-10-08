@@ -7,6 +7,7 @@ from django.urls import reverse
 
 @override_settings(SECURE_SSL_REDIRECT=False)
 class ReadinessCheckTests(TestCase):
+
     @override_settings(SECURE_SSL_REDIRECT=True)
     def test_http_readiness_reaches_database_check_with_https_enabled(self):
         response = self.client.get(reverse('readiness_check'))
@@ -28,6 +29,7 @@ class ReadinessCheckTests(TestCase):
 
         self.assertEqual(response.status_code, 301)
         self.assertEqual(response['Location'], 'https://testserver/accounts/login/')
+
 
     def test_ready_when_database_is_available(self):
         response = self.client.get(reverse('readiness_check'))
@@ -53,6 +55,7 @@ class ReadinessCheckTests(TestCase):
         self.assertEqual(response.content, b'Not ready')
 
     @override_settings(SECURE_SSL_REDIRECT=True)
+
     def test_health_check_is_available_without_database(self):
         with patch('jobtrack.urls.connection.cursor', side_effect=OperationalError('database unavailable')):
             response = self.client.get(reverse('health_check'))
